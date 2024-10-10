@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Auction Bar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body, html {
+            margin: 20px;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+        canvas {
+            max-width: 100%;
+            width: 800px;
+        }
+        .player-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .player-info img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+        .player-details {
+            text-align: left;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        .status.active {
+            background-color: green;
+        }
+        .status.sold {
+            background-color: red;
+        }
+        .status.pending {
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Live Auction</h1>
+        
+        <!-- Player Info Section -->
+        <div class="player-info">
+            <img src="images/kl_rahul.jpeg" alt="Player 1 Profile" id="playerImage">
+            <div class="player-details">
+                <h2 id="playerName">KL RAHUL</h2>
+                <p>Status: <span class="status active" id="playerStatus">Sold</span></p>
+            </div>
+        </div>
+
+        <canvas id="populationChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('populationChart').getContext('2d');
+        const populationChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Team A', 'Team B', 'Team C', 'Team D'],
+                datasets: [{
+                    label: 'Bid Price (Thousand)',
+                    data: [120, 250, 300, 180], // Initial bid for KL Rahul
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'x',
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true
+            }
+        });
+
+        // Function to update both player details and the chart data
+        function updatePlayerDetails(name, imageUrl, status, newBids) {
+            document.getElementById('playerName').textContent = name;
+            document.getElementById('playerImage').src = imageUrl;
+            const statusElement = document.getElementById('playerStatus');
+            statusElement.textContent = status;
+
+            // Update status color
+            statusElement.className = 'status';
+            if (status === 'Active') {
+                statusElement.classList.add('active');
+            } else if (status === 'Sold') {
+                statusElement.classList.add('sold');
+            } else {
+                statusElement.classList.add('pending');
+            }
+
+            // Update the chart data
+            populationChart.data.datasets[0].data = newBids;
+            populationChart.update();
+        }
+
+        // Example of updating player details and bids dynamically
+        setTimeout(() => {
+            updatePlayerDetails('Virat Kohli', 'images/koholi.jpeg', 'Active', [150, 300, 250, 320]); // Updated bids for Kohli
+        }, 5000); // Change after 5 seconds
+    </script>
+
+</body>
+</html>
